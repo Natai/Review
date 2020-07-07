@@ -1,25 +1,28 @@
 import Foundation
 
-var test: Int?
+/*
+ 提供了线程阻塞与信号机制
+ The lock protects your code while it tests the condition and performs the task triggered by the condition.
+ The checkpoint behavior requires that the condition be true before the thread proceeds with its task.
+ */
+
+var count: Int = 0
 let condition = NSCondition()
 
 func consume() {
     condition.lock()
-    while test == nil {
-        print("wait")
+    while count == 0 {
         condition.unlock()
         condition.wait()
     }
-    print("consume:\(test!)")
-    test == nil
-    print(test!)
+    print("consume:\(count)")
     condition.unlock()
 }
 
-func product(value: Int) {
+func product() {
     condition.lock()
-    test = value
-    print("product:\(value)")
+    count += 1
+    print("product:\(count)")
     condition.signal()
     condition.unlock()
 }
@@ -27,9 +30,6 @@ func product(value: Int) {
 Thread.detachNewThread {
     consume()
 }
-for i in 0...10 {
-    DispatchQueue.global().async {
-        product(value: i)
-    }
-    Thread.sleep(forTimeInterval: 1)
+Thread.detachNewThread {
+    product()
 }

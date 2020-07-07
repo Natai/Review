@@ -4,5 +4,7 @@
         <page name='信号量'/>
         <page name='NSLock'/>
         <page name='NSCondition'/>
+        <page name='NSConditionLock'/>
+        <page name='NSRecursiveLock'/>
     </pages>
 </playground>
