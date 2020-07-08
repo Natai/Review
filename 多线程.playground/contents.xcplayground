@@ -6,5 +6,9 @@
         <page name='NSCondition'/>
         <page name='NSConditionLock'/>
         <page name='NSRecursiveLock'/>
+        <page name='串行队列同步执行'/>
+        <page name='串行队列异步执行'/>
+        <page name='并行队列同步执行'/>
+        <page name='并行队列异步执行'/>
     </pages>
 </playground>
