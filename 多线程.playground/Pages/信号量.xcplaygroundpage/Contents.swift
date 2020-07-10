@@ -1,6 +1,6 @@
 import UIKit
 
-// 使用信号量来控制并发线程的数量
+// 使用信号量来控制并发线程的数量，信号总量小于0时就会一直等待
 
 let semaphore1 = DispatchSemaphore(value: 1)
 for i in 0...10 {

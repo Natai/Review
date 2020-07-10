@@ -18,11 +18,6 @@ for _ in 0...10 {
 
 Thread.sleep(forTimeInterval: 1)
 
-// 同一线程两次调用lock()将锁死线程
-lock.lock()
-lock.lock()
-print("test lock")
-
 DispatchQueue.global().async {
     lock.lock()
     print("线程1执行")
@@ -50,3 +45,9 @@ DispatchQueue.global().async {
         print("线程3加锁失败")
     }
 }
+
+let lock2 = NSLock()
+// 同一线程两次调用lock()将锁死线程
+lock2.lock()
+lock2.lock()
+print("test lock")

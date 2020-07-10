@@ -8,5 +8,6 @@
         <page name='NSRecursiveLock'/>
         <page name='GCD'/>
         <page name='Thread'/>
+        <page name='Operation'/>
     </pages>
 </playground>
