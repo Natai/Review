@@ -10,11 +10,25 @@ import Foundation
  将operation加入queue后，系统已经自动实现了异步
  */
 
+/*
+ 对于blockOperation，添加的多个block是并行执行的，会创建新线程
+ （并不妨碍operation是同步执行，当前线程等待返回。也就是说operation执行完后才执行接下来的代码）
+ */
+
 let operation = BlockOperation()
 operation.addExecutionBlock { [unowned operation] in
     // 同步执行，所以下方的取消方法需要在start前注册，否则循环完后才开始取消
     print(Thread.current)
     for i in 0...9 {
+        Thread.sleep(forTimeInterval: 0.5)
+        if operation.isCancelled { return }
+        print(i)
+    }
+}
+operation.addExecutionBlock { [unowned operation] in
+    // 同步执行，所以下方的取消方法需要在start前注册，否则循环完后才开始取消
+    print(Thread.current)
+    for i in 100...1000 {
         Thread.sleep(forTimeInterval: 0.5)
         if operation.isCancelled { return }
         print(i)

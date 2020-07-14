@@ -9,6 +9,7 @@
         <page name='GCD'/>
         <page name='Thread'/>
         <page name='Operation'/>
+        <page name='BlockOperation'/>
         <page name='OperationQueue'/>
     </pages>
 </playground>
