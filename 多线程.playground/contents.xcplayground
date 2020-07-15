@@ -6,10 +6,10 @@
         <page name='NSCondition'/>
         <page name='NSConditionLock'/>
         <page name='NSRecursiveLock'/>
-        <page name='GCD'/>
+        <page name='GCD基础'/>
+        <page name='GCD进阶'/>
         <page name='Thread'/>
         <page name='Operation'/>
-        <page name='BlockOperation'/>
         <page name='OperationQueue'/>
     </pages>
 </playground>

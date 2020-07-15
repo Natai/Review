@@ -4,8 +4,8 @@ import Foundation
  队列：任务先进先出
  串行队列：任务先进先出，只有一个线程，当前执行完成再取出下一个任务执行
  并行队列：任务先进先出，可以开启多个线程，所以可以多个任务并行执行。但是任务过多时，GCD 会根据系统资源控制并行的数量，并不会让所有任务同时执行
- 同步执行：提交任务到当前队列，任务执行完成才返回
- 异步执行：提交任务到当前队列，并且立即返回
+ 同步执行：提交任务到调用snyc的队列，任务执行完成才返回
+ 异步执行：提交任务到调用async的队列，并且立即返回
  */
 
 /*
@@ -40,7 +40,7 @@ for i in 0...9 {
         print(i)
     }
 }
-print("主线程没有被阻塞，异步任务完成前就会被打印")
+print("异步任务立即返回，任务完成前就会被打印")
 
 Thread.sleep(forTimeInterval: 1)
 
@@ -50,18 +50,18 @@ for i in 0...9 {
         print(i)
     }
 }
-print("主线程被阻塞，同步任务完成后才会被打印")
+print("同步任务执行完后才返回，任务完成后才会被打印")
 
 print("全局队列同步执行")
 DispatchQueue.global().sync {
-    Thread.sleep(forTimeInterval: 0.5)
+    Thread.sleep(forTimeInterval: 1)
 }
 print("全局队列同步执行完成")
 
 
 // MARK: - 线程死锁
-// 死锁必然发生于串行队列；具体的，在串行队列中，给它自己同步添加任务，则死锁
 Thread.sleep(forTimeInterval: 0.5)
+// 死锁必然发生于串行队列；具体的，在串行队列中，给它自己同步添加任务，则死锁
 //DispatchQueue.main.sync {
 //    print("主队列同步执行")
 //}
