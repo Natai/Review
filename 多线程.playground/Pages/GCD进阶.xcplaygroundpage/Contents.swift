@@ -14,7 +14,7 @@ barrierQueue.async {
     Thread.sleep(forTimeInterval: 1)
 }
 // 1s后任务才被提交到队列中，所以barrier对该任务无效
-barrierQueue.asyncAfter(deadline: .now() + 2) {
+barrierQueue.asyncAfter(deadline: .now() + 2.5) {
     print("asyncAfter")
 }
 barrierQueue.async(flags: .barrier) {
@@ -23,4 +23,29 @@ barrierQueue.async(flags: .barrier) {
 }
 barrierQueue.async {
     print("after barrier")
+}
+
+
+// MARK: - Group
+Thread.sleep(forTimeInterval: 3)
+let group = DispatchGroup()
+group.enter()
+DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+    print("group waiting")
+    group.leave()
+}
+print("group start wait")
+group.wait()
+group.enter()
+DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+    print("group leave1")
+    group.leave()
+}
+group.enter()
+DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+    print("group leave2")
+    group.leave()
+}
+group.notify(queue: .main) {
+    print("notify")
 }

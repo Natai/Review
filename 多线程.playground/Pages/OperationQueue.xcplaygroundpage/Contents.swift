@@ -33,6 +33,7 @@ let pauseQueue = OperationQueue()
 pauseQueue.addOperation {
     for i in 0...9 {
         Thread.sleep(forTimeInterval: 0.5)
+        // 不能暂停掉已开始执行的任务
         print("暂停", i)
     }
 }
