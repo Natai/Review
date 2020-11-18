@@ -1,30 +1,26 @@
 import Foundation
 
 class ThreadKeeper: NSObject {
-    var thread: Thread?
-    
     func startThread() {
-        thread = Thread(target: self, selector: #selector(keepThread), object: nil)
-        thread?.start()
-    }
-    
-    func manualAction() {
-        print("manualAction start")
-        guard let thread = thread else { return }
-        // 触发source0
-        perform(#selector(perforManualAction), on: thread, with: nil, waitUntilDone: false)
+        let thread = Thread(target: self, selector: #selector(keepThread), object: nil)
+        thread.start()
+        
+        // 延迟1s在thread上停止runloop
+        Thread.sleep(forTimeInterval: 1)
+        perform(#selector(delayStop), on: thread, with: nil, waitUntilDone: false)
+        
+        // 再延迟1s在thread上执行操作，perform后也会自动停止runloop
+        Thread.sleep(forTimeInterval: 1)
+        perform(#selector(delayAction), on: thread, with: nil, waitUntilDone: false)
     }
     
     @objc private func keepThread() {
         print("keepThread")
         addObserver()
-        perform(#selector(delayAction), with: nil, afterDelay: 1)
-//        // 调用该方法可以手动退出runloop
-//        perform(#selector(delayStop), with: nil, afterDelay: 2)
         RunLoop.current.add(NSMachPort(), forMode: .common)
         /*
          return after either the first input source is processed or limitDate is reached
-         接收到第一个source或达到截止时间，退出runloop
+         接收到第一个source或达到截止时间，退出runloop（perform也是一个source，timer不是）
          */
         RunLoop.current.run(mode: .default, before: .distantFuture)
         print("runloop已退出")
@@ -52,23 +48,17 @@ class ThreadKeeper: NSObject {
         CFRunLoopAddObserver(CFRunLoopGetCurrent(), observer, .defaultMode)
     }
     
-    @objc private func delayStop() {
-        print("delayStop")
-        CFRunLoopStop(CFRunLoopGetCurrent())
-    }
-    
+    // 如果该方法被调用，则表明delayStop()方法无效
     @objc private func delayAction() {
         print("delayAction")
     }
     
-    // 如果该方法被调用，则表明delayStop()方法无效
-    @objc private func perforManualAction() {
-        print("perforManualAction")
+    // 调用该方法可以手动退出runloop
+    @objc private func delayStop() {
+        print("delayStop")
+        CFRunLoopStop(CFRunLoopGetCurrent())
     }
 }
 
 let keeper = ThreadKeeper()
 keeper.startThread()
-DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-    keeper.manualAction()
-}

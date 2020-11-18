@@ -6,12 +6,15 @@ class ThreadKeeper: NSObject {
     func startThread() {
         let thread = Thread(target: self, selector: #selector(keepThread), object: nil)
         thread.start()
+        
+        // 延迟1s在thread上删除port
+        Thread.sleep(forTimeInterval: 1)
+        perform(#selector(delayAction), on: thread, with: nil, waitUntilDone: false)
     }
     
 
     @objc private func keepThread() {
         print("keepThread")
-        perform(#selector(delayAction), with: nil, afterDelay: 1)
         RunLoop.current.add(port, forMode: .common)
         /*
          在until时间前该方法反复调用run(mode:before:)；
@@ -23,8 +26,6 @@ class ThreadKeeper: NSObject {
     }
     
     @objc private func delayAction() {
-//        // 在until时间钱移除source和timer，可能能退出当前ruloop
-//        RunLoop.current.remove(port, forMode: .common)
         print("delayAction")
     }
 }
